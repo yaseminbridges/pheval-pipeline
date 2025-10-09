@@ -1,0 +1,16 @@
+Bootstrap: docker
+From: python:3.11-slim
+
+%post
+    apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        git \
+        && rm -rf /var/lib/apt/lists/*
+
+    pip install --no-cache-dir \
+        pheval==0.6.5 \
+        pheval-exomiser==0.3.4 \
+        duckdb
+
+%environment
+    export PATH=/usr/local/bin:$PATH
