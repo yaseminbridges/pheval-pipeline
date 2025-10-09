@@ -1,0 +1,17 @@
+tool: exomiser
+tool_version: EXOMISER_VERSION
+variant_analysis: True
+gene_analysis: True
+disease_analysis: False
+tool_specific_configuration_options:
+  environment: local
+  exomiser_software_directory: exomiser-cli-EXOMISER_VERSION
+  analysis_configuration_file: PRESET_FILE
+  application_properties:
+    hg19_data_version: "HG19_DB_VERSION"
+    hg38_data_version: "HG38_DB_VERSION"
+    phenotype_data_version: "PHENO_DB_VERSION"
+  output_formats: [JSON, HTML]
+  post_process:
+    score_name: combinedScore
+    sort_order: DESCENDING
