@@ -5,10 +5,7 @@ workflow {
 }
 
 process pheval_exomiser {
-
-publishDir "results/exomiser", mode: 'copy'
-
-    conda = "envs/pheval-exomiser.yml"
+    publishDir "results/exomiser", mode: 'copy'
 
     script:
     """

@@ -8,9 +8,7 @@ From: python:3.11-slim
         && rm -rf /var/lib/apt/lists/*
 
     pip install --no-cache-dir \
-        pheval==0.6.5 \
-        pheval-exomiser==0.3.4 \
-        duckdb
+        pheval-exomiser==0.3.4
 
 %environment
     export PATH=/usr/local/bin:$PATH
