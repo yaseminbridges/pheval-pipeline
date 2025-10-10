@@ -1,16 +1,25 @@
 tool: exomiser
-tool_version: EXOMISER_VERSION
+tool_version: {{EXOMISER_VERSION}}
 variant_analysis: True
 gene_analysis: True
 disease_analysis: False
 tool_specific_configuration_options:
   environment: local
-  exomiser_software_directory: exomiser-cli-EXOMISER_VERSION
-  analysis_configuration_file: PRESET_FILE
+  exomiser_software_directory: exomiser-cli-{{EXOMISER_VERSION}}
+  analysis_configuration_file: {{PRESET}}
+  max_jobs: 0
   application_properties:
-    hg19_data_version: "HG19_DB_VERSION"
-    hg38_data_version: "HG38_DB_VERSION"
-    phenotype_data_version: "PHENO_DB_VERSION"
+    remm_version:
+    cadd_version:
+    hg19_data_version: "{{HG19_VERSION}}"
+    hg19_local_frequency_path:
+    hg19_whitelist_path:
+    hg38_data_version: "{{HG38_VERSION}}"
+    hg38_local_frequency_path:
+    hg38_whitelist_path:
+    phenotype_data_version: "{{PHENO_VERSION}}"
+    cache_type: caffeine
+    cache_caffeine_spec: 1000000
   output_formats: [JSON, HTML]
   post_process:
     score_name: combinedScore
