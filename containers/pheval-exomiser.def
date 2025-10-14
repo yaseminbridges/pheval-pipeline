@@ -5,10 +5,13 @@ From: python:3.11-slim
     apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         git \
+        openjdk-21-jre-headless \
         && rm -rf /var/lib/apt/lists/*
 
+    # install pheval and exomiser runner
     pip install --no-cache-dir \
         pheval-exomiser==0.3.4
 
 %environment
-    export PATH=/usr/local/bin:$PATH
+    export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+    export PATH=$JAVA_HOME/bin:/usr/local/bin:$PATH
