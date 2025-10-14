@@ -67,8 +67,6 @@ process run_pheval {
 
     script:
     """
-    echo "DEBUG cfg=${cfg}" >&2
-    echo "DEBUG corpus=${corpus}" >&2
     mkdir -p ${params.results_dir}/${cfg.config_id}/${corpus.corpora_id}
     pheval run \
       -i ${params.configurations_dir}/${cfg.config_id} \
