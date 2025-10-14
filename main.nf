@@ -15,11 +15,9 @@ process prepare_exomiser_input {
 
     script:
     """
-    # Make config-specific directory
     mkdir -p ${cfg.config_id}
     cd ${cfg.config_id}
 
-    # Symlink databases
     ln -s ${params.data_dir}/${cfg.phenotype_db}_phenotype ./
     if [ -n "${cfg.hg19_db}" ]; then
         ln -s ${params.data_dir}/${cfg.hg19_db}_hg19 ./
@@ -54,7 +52,6 @@ process prepare_corpora {
     """
     mkdir -p ${corpus.corpora_id}
 
-    # Link phenopackets + vcfs
     ln -s ${corpus.phenopacket_directory} ${corpus.corpora_id}/phenopackets
     if [ -n "${corpus.vcf_directory}" ]; then
         ln -s ${corpus.vcf_directory} ${corpus.corpora_id}/vcf
