@@ -9,8 +9,8 @@ include { prepareCorpora } from './modules/prepareCorpora.nf'
 include { runExomiserRunner } from './modules/runExomiserRunner.nf'
 
 workflow {
-    exo_ch     = Channel.fromList(params.exomiser_configs) | prepareExomiserConfigurations
-    corpora_ch = Channel.fromList(params.corpora_configs)  | prepareCorpora
+    exomiser_configurations_ch = prepareExomiserConfigurations(Channel.fromList(params.exomiser_configs))
+    corpora_ch = prepareCorpora(Channel.fromList(params.corpora_configs))
 
-    exo_ch.combine(corpora_ch) | runExomiserRunner
+    runExomiserRunner(exomiser_configurations_ch.combine(corpora_ch))
 }

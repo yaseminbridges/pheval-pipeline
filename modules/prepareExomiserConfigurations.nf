@@ -7,7 +7,7 @@ process prepareExomiserConfigurations {
     val cfg
 
     output:
-    tuple val(cfg), path("${cfg.config_id}", type: 'dir')
+    val(cfg)
 
     script:
     """

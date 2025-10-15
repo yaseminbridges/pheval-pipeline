@@ -4,7 +4,7 @@ process runExomiserRunner {
     publishDir "${params.results_dir}", mode: 'copy', overwrite: true
 
     input:
-    tuple val(cfg), path(config_dir), val(corpus), path(corpus_dir)
+    tuple val(cfg), val(corpus),
 
     script:
     """

@@ -7,7 +7,7 @@ process prepareCorpora {
     val corpus
 
     output:
-    tuple val(corpus), path("${corpus.corpora_id}", type: 'dir')
+    val(corpus)
 
     script:
     """
