@@ -1,0 +1,36 @@
+#!/usr/bin/env nextflow
+
+process prepare_exomiser_input {
+    publishDir "${params.configurations}", mode: 'move', overwrite: true, followLinks: true
+
+    input:
+    val cfg
+
+    output:
+    tuple val(cfg), path("${cfg.config_id}", type: 'dir')
+
+    script:
+    """
+    mkdir -p ${cfg.config_id}
+    cd ${cfg.config_id}
+
+    ln -s ${params.data_dir}/${cfg.phenotype_db}_phenotype ./
+    if [ -n "${cfg.hg19_db}" ]; then
+        ln -s ${params.data_dir}/${cfg.hg19_db}_hg19 ./
+    fi
+    if [ -n "${cfg.hg38_db}" ]; then
+        ln -s ${params.data_dir}/${cfg.hg38_db}_hg38 ./
+    fi
+
+    cp -r ${params.exomiser_distribution_dir}/exomiser-cli-${cfg.exomiser_version} ./
+
+    cp ${baseDir}/presets/${cfg.preset} ./
+
+    sed -e "s|{{EXOMISER_VERSION}}|${cfg.exomiser_version}|g" \
+        -e "s|{{HG19_VERSION}}|\"${cfg.hg19_db}\"|g" \
+        -e "s|{{HG38_VERSION}}|\"${cfg.hg38_db}\"|g" \
+        -e "s|{{PHENO_VERSION}}|\"${cfg.phenotype_db}\"|g" \
+        -e "s|{{PRESET}}|${cfg.preset}|g" \
+        ${params.config_template} > config.yaml
+    """
+}
