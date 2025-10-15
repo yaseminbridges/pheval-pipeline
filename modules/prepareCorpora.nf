@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 process prepareCorpora {
-    publishDir "${params.corpora}", mode: 'move', overwrite: true, followLinks: true
+    publishDir "${params.corpora_dir}", mode: 'move', overwrite: true, followLinks: true
 
     input:
     val corpus

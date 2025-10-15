@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 process prepareExomiserConfigurations {
-    publishDir "${params.configurations}", mode: 'move', overwrite: true, followLinks: true
+    publishDir "${params.configurations_dir}", mode: 'move', overwrite: true, followLinks: true
 
     input:
     val cfg
