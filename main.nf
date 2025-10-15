@@ -81,7 +81,7 @@ params.results_dir        = "${projectDir}/results"
 
 
 include { prepareExomiserConfigurations } from './modules/prepareExomiserConfigurations.nf'
-include { prepareCorpora } from './modules/prepareExomiserConfigurations.nf'
+include { prepareCorpora } from './modules/prepareCorpora.nf'
 include { runExomiserRunner } from './modules/runExomiserRunner.nf'
 
 workflow {
