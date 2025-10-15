@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-process prepare_exomiser_input {
+process prepareExomiserConfigurations {
     publishDir "${params.configurations}", mode: 'move', overwrite: true, followLinks: true
 
     input:

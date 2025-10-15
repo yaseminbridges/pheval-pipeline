@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-process prepare_corpora {
+process prepareCorpora {
     publishDir "${params.corpora}", mode: 'move', overwrite: true, followLinks: true
 
     input:
