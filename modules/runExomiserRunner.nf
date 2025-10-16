@@ -7,16 +7,19 @@ process runExomiserRunner {
     tuple val(cfg), val(corpus)
 
     output:
-    tuple val(corpus.corpora_id), val(cfg.config_id), path("${params.results_dir}/${cfg.config_id}/${corpus.corpora_id}")
+    tuple val(corpus.corpora_id), val(cfg.config_id)
 
     script:
     """
-    mkdir -p ${params.results_dir}/${cfg.config_id}/${corpus.corpora_id}
+
+    outdir="\$PWD/${cfg.config_id}/${corpus.corpora_id}"
+    mkdir -p "\$outdir"
+
     pheval run \
       -i ${params.configurations_dir}/${cfg.config_id} \
       -r exomiserphevalrunner \
       -t ${params.corpora_dir}/${corpus.corpora_id} \
-      -o ${params.results_dir}/${cfg.config_id}/${corpus.corpora_id} \
+      -o "\$outdir" \
       -v ${cfg.exomiser_version}
     """
 }
