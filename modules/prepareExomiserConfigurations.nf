@@ -7,7 +7,8 @@ process prepareExomiserConfigurations {
     val cfg
 
     output:
-    val(cfg)
+    val(cfg), emit: cfg
+    path("${cfg.config_id}", type: 'dir')
 
     script:
     """

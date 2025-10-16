@@ -14,9 +14,9 @@ workflow {
     exomiser_configurations_ch = prepareExomiserConfigurations(Channel.fromList(params.exomiser_configs))
     corpora_ch = prepareCorpora(Channel.fromList(params.corpora_configs))
 
-    runner_out = runExomiserRunner(exomiser_configurations_ch.combine(corpora_ch))
+    runner_out = runExomiserRunner(exomiser_configurations_ch.cfg.combine(corpora_ch.corpus))
 
-    grouped = runner_out.groupTuple(by: 0)
+    grouped = runner_out.run.groupTuple(by: 0)
 
     grouped = grouped.map { corpus_id, cfgs -> tuple(corpus_id, cfgs.join(" ")) }
 

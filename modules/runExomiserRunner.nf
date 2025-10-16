@@ -7,7 +7,10 @@ process runExomiserRunner {
     tuple val(cfg), val(corpus)
 
     output:
-    tuple val(corpus.corpora_id), val(cfg.config_id)
+    tuple val(corpus.corpora_id), val(cfg.config_id), emit: run
+
+    path("${cfg.config_id}/${corpus.corpora_id}", type: 'dir')
+
 
     script:
     """

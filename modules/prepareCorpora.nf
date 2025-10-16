@@ -7,7 +7,8 @@ process prepareCorpora {
     val corpus
 
     output:
-    val(corpus)
+    val(corpus), emit: corpus
+    path("${corpus.corpora_id}", type: 'dir')
 
     script:
     """
