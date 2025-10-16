@@ -6,6 +6,9 @@ process runExomiserRunner {
     input:
     tuple val(cfg), val(corpus)
 
+    output:
+    tuple val(corpus.corpora_id), val(cfg.config_id), path("${params.results_dir}/${cfg.config_id}/${corpus.corpora_id}")
+
     script:
     """
     mkdir -p ${params.results_dir}/${cfg.config_id}/${corpus.corpora_id}
