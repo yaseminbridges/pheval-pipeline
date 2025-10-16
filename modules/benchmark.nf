@@ -4,34 +4,41 @@ process createBenchmarkConfig {
     publishDir "${params.benchmark_dir}", mode: 'copy', overwrite: true
 
     input:
-    tuple val(corpus_id), path("runs_info.txt")
+    tuple val(corpus_id), val(cfgs)
 
     output:
-    path "benchmark_${corpus_id}.yml"
+    path "${corpus_id}_*"
 
     script:
     """
-    gene_analysis=\$(yq e '.gene_analysis' ${params.config_template})
-    variant_analysis=\$(yq e '.variant_analysis' ${params.config_template})
-    disease_analysis=\$(yq e '.disease_analysis' ${params.config_template})
+    out_yaml=${corpus_id}_benchmark.yaml
 
-    echo "benchmark_name: ${corpus_id}_benchmark" > benchmark_${corpus_id}.yml
-    echo "runs:" >> benchmark_${corpus_id}.yml
+    # Extract flags safely from config_template
+    gene_analysis=\$(grep '^gene_analysis:' ${params.config_template} | awk '{print tolower(\$2)}')
+    variant_analysis=\$(grep '^variant_analysis:' ${params.config_template} | awk '{print tolower(\$2)}')
+    disease_analysis=\$(grep '^disease_analysis:' ${params.config_template} | awk '{print tolower(\$2)}')
 
-    while read run_id results_dir; do
-      cat >> benchmark_${corpus_id}.yml <<EOF
-  - run_identifier: \${run_id}
-    results_dir: \${results_dir}
-    phenopacket_dir:
-    gene_analysis: \${gene_analysis}
-    variant_analysis: \${variant_analysis}
-    disease_analysis: \${disease_analysis}
+    echo "benchmark_name: ${corpus_id}_exomiser_benchmark" > \$out_yaml
+    echo "runs:" >> \$out_yaml
+
+    for cfg in ${cfgs}; do
+        run_id=\$(echo \$cfg | tr '/' '_')
+        results_dir="${params.results_dir}/\$cfg/${corpus_id}"
+        phenopacket_dir="${params.corpora_dir}/${corpus_id}/phenopackets"
+
+        cat >> \$out_yaml <<EOF
+  - run_identifier: \$run_id
+    results_dir: \$results_dir
+    phenopacket_dir: \$phenopacket_dir
+    gene_analysis: \$gene_analysis
+    variant_analysis: \$variant_analysis
+    disease_analysis: \$disease_analysis
     threshold:
     score_order: descending
 EOF
-    done < runs_info.txt
+    done
 
-    cat >> benchmark_${corpus_id}.yml <<EOF
+    cat >> \$out_yaml <<EOF
 plot_customisation:
   gene_plots:
     plot_type: bar_cumulative
@@ -49,5 +56,6 @@ plot_customisation:
     roc_curve_title:
     precision_recall_title:
 EOF
+    pheval-utils benchmark -r \$out_yaml
     """
 }
