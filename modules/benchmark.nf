@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-process createBenchmarkConfig {
+process benchmark {
     publishDir "${params.benchmark_dir}", mode: 'copy', overwrite: true
 
     input:

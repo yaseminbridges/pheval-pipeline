@@ -8,7 +8,7 @@ params.benchmark_dir        = "${projectDir}/benchmark"
 include { prepareExomiserConfigurations } from './modules/prepareExomiserConfigurations.nf'
 include { prepareCorpora } from './modules/prepareCorpora.nf'
 include { runExomiserRunner } from './modules/runExomiserRunner.nf'
-include { createBenchmarkConfig } from './modules/benchmark.nf'
+include { benchmark } from './modules/benchmark.nf'
 
 workflow {
     exomiser_configurations_ch = prepareExomiserConfigurations(Channel.fromList(params.exomiser_configs))
@@ -20,5 +20,5 @@ workflow {
 
     grouped = grouped.map { corpus_id, cfgs -> tuple(corpus_id, cfgs.join(" ")) }
 
-    createBenchmarkConfig(grouped)
+    benchmark(grouped)
 }
