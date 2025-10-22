@@ -1,10 +1,5 @@
 #!/usr/bin/env nextflow
 
-params.configurations_dir = "${projectDir}/configurations"
-params.corpora_dir        = "${projectDir}/corpora"
-params.results_dir        = "${projectDir}/results"
-params.benchmark_dir        = "${projectDir}/benchmark"
-
 include { prepareExomiserConfigurations } from './modules/prepareExomiserConfigurations.nf'
 include { prepareCorpora } from './modules/prepareCorpora.nf'
 include { runExomiserRunner } from './modules/runExomiserRunner.nf'
