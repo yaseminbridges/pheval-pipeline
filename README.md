@@ -29,7 +29,7 @@ If you are running on an HPC environment with Apptainer/Singularity, build the .
 
 ```bash
 mkdir sif
-apptainer build sif/pheval-exomiser-0.6.5.sif containers/pheval-exomiser.def
+apptainer build sif/pheval-exomiser-0.6.5.sif modules/tools/exomiser/containers/pheval-exomiser.def
 ```
 
 ### Option 2: Conda (Local)
@@ -54,9 +54,9 @@ params {
   benchmark_dir      = "${projectDir}/benchmark"       // Benchmark outputs (YAML configuration + plots + stats)
 
   // --- Input resources ---
-  data_dir        = "/exomiser/data" // Exomiser databases (phenotype/hg19/hg38)
+  exomiser_data_dir        = "/exomiser/data" // Exomiser databases (phenotype/hg19/hg38)
   exomiser_distribution_dir = "/exomiser/distribution"   // Path to unpacked Exomiser distribution
-  config_template = "${projectDir}/configs/exomiser_config_template.yml" // Template used to build each config.yaml
+  exomiser_config_template = "${projectDir}/configs/exomiser_config_template.yml" // Template used to build each config.yaml
 
   // --- Exomiser run configurations ---
   // Each entry defines one run setup (db versions, presets, etc.)
@@ -67,7 +67,7 @@ params {
         phenotype_db: "2508",                               // Phenotype DB version
         hg19_db: "2508",                                    // hg19 genome DB version
         hg38_db: "2508",                                    // hg38 genome DB version
-        preset: "preset-exome-analysis.yml"                 // Preset configuration file located in ./presets
+        exomiser_analysis: "preset-exome-analysis.yml"                 // Preset configuration file located in ./modules/tools/exomiser/presets
     ],
     [
         config_id: "exomiser-14.1.0/2508_human_only",
@@ -75,7 +75,7 @@ params {
         phenotype_db: "2508",
         hg19_db: "2508",
         hg38_db: "2508",
-        preset: "preset-exome-analysis_human_only.yml"
+        exomiser_analysis: "preset-exome-analysis_human_only.yml"
     ]
   ]
 

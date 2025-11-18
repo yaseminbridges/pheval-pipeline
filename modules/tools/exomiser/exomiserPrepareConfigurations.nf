@@ -15,12 +15,12 @@ process prepareExomiserConfigurations {
     mkdir -p ${cfg.config_id}
     cd ${cfg.config_id}
 
-    ln -s ${params.data_dir}/${cfg.phenotype_db}_phenotype ./
+    ln -s ${params.exomiser_data_dir}/${cfg.phenotype_db}_phenotype ./
     if [ -n "${cfg.hg19_db}" ]; then
-        ln -s ${params.data_dir}/${cfg.hg19_db}_hg19 ./
+        ln -s ${params.exomiser_data_dir}/${cfg.hg19_db}_hg19 ./
     fi
     if [ -n "${cfg.hg38_db}" ]; then
-        ln -s ${params.data_dir}/${cfg.hg38_db}_hg38 ./
+        ln -s ${params.exomiser_data_dir}/${cfg.hg38_db}_hg38 ./
     fi
 
     cp -r ${params.exomiser_distribution_dir}/exomiser-cli-${cfg.exomiser_version} ./
@@ -32,6 +32,6 @@ process prepareExomiserConfigurations {
         -e "s|{{HG38_VERSION}}|\"${cfg.hg38_db}\"|g" \
         -e "s|{{PHENO_VERSION}}|\"${cfg.phenotype_db}\"|g" \
         -e "s|{{PRESET}}|${cfg.preset}|g" \
-        ${params.config_template} > config.yaml
+        ${params.exomiser_config_template} > config.yaml
     """
 }

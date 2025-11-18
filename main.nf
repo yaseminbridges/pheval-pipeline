@@ -1,8 +1,8 @@
 #!/usr/bin/env nextflow
 
-include { prepareExomiserConfigurations } from './modules/prepareExomiserConfigurations.nf'
+include { prepareExomiserConfigurations } from './modules/tools/exomiser/exomiserPrepareConfigurations.nf'
 include { prepareCorpora } from './modules/prepareCorpora.nf'
-include { runExomiserRunner } from './modules/runExomiserRunner.nf'
+include { runExomiserRunner } from './modules/tools/exomiser/exomiserRunner.nf'
 include { benchmark } from './modules/benchmark.nf'
 
 workflow {
