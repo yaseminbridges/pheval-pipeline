@@ -1,0 +1,11 @@
+tool: GADO
+tool_version: {{GADO_VERSION}}
+variant_analysis: False
+gene_analysis: True
+disease_analysis: False
+tool_specific_configuration_options:
+  gado_jar: {{GADO_JAR}}
+  hpo_ontology: {{HPO_ONTOLOGY}}
+  hpo_predictions_info: {{PREDICTION_INFO}}
+  genes: {{GENE_LIST}}
+  hpo_predictions: {{PREDICTION_MATRIX}}

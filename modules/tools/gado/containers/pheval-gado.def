@@ -1,0 +1,16 @@
+Bootstrap: docker
+From: python:3.11-slim
+
+%post
+    apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        git \
+        openjdk-21-jre-headless \
+        && rm -rf /var/lib/apt/lists/*
+
+    pip install --no-cache-dir \
+        pheval-gado==0.3.0
+
+%environment
+    export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+    export PATH=$JAVA_HOME/bin:/usr/local/bin:$PATH
