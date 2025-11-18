@@ -50,7 +50,7 @@ process prepareGADOConfigurations {
       -e "s|{{GADO_JAR}}|\$gado_jar|g" \
       -e "s|{{HPO_ONTOLOGY}}|\$ontology_file|g" \
       -e "s|{{PREDICTION_INFO}}|\$prediction_info|g" \
-      -e "s|{{GENES}}|\$genes_file|g" \
+      -e "s|{{GENE_LIST}}|\$genes_file|g" \
       -e "s|{{PREDICTION_MATRIX}}|\$prediction_matrix|g" \
       ${params.gado_config_template} > config.yaml
     """
