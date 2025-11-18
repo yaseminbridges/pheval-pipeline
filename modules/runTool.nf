@@ -1,6 +1,4 @@
-#!/usr/bin/env nextflow
-
-process runGADORunner {
+process runToolRunner {
     publishDir "${params.results_dir}", mode: 'copy', overwrite: true
 
     input:
@@ -11,18 +9,16 @@ process runGADORunner {
 
     path("${cfg.config_id}/${corpus.corpora_id}", type: 'dir')
 
-
     script:
     """
-
     outdir="\$PWD/${cfg.config_id}/${corpus.corpora_id}"
     mkdir -p "\$outdir"
 
     pheval run \
       -i ${params.configurations_dir}/${cfg.config_id} \
-      -r gadophevalrunner \
+      -r ${cfg.runner} \
       -t ${params.corpora_dir}/${corpus.corpora_id} \
       -o "\$outdir" \
-      -v ${cfg.gado_version}
+      -v ${cfg.version}
     """
 }
