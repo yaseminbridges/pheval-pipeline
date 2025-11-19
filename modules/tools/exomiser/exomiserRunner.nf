@@ -23,6 +23,6 @@ process runExomiserRunner {
       -r exomiserphevalrunner \
       -t ${params.corpora_dir}/${corpus.corpora_id} \
       -o "\$outdir" \
-      -v ${cfg.exomiser_version}
+      -v ${cfg.version}
     """
 }

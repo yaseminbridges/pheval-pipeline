@@ -46,7 +46,7 @@ process prepareGADOConfigurations {
     ontology_file=\$(fetch "${cfg.hpo_ontology}")
 
     sed \
-      -e "s|{{GADO_VERSION}}|${cfg.gado_version}|g" \
+      -e "s|{{GADO_VERSION}}|${cfg.version}|g" \
       -e "s|{{GADO_JAR}}|\$gado_jar|g" \
       -e "s|{{HPO_ONTOLOGY}}|\$ontology_file|g" \
       -e "s|{{PREDICTION_INFO}}|\$prediction_info|g" \

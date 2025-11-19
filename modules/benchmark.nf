@@ -13,15 +13,14 @@ process benchmark {
     """
     out_yaml=${corpus_id}_benchmark.yaml
 
-    # Extract flags safely from config_template
-    gene_analysis=\$(grep '^gene_analysis:' ${params.config_template} | awk '{print tolower(\$2)}')
-    variant_analysis=\$(grep '^variant_analysis:' ${params.config_template} | awk '{print tolower(\$2)}')
-    disease_analysis=\$(grep '^disease_analysis:' ${params.config_template} | awk '{print tolower(\$2)}')
-
     echo "benchmark_name: ${corpus_id}_exomiser_benchmark" > \$out_yaml
     echo "runs:" >> \$out_yaml
 
     for cfg in ${cfgs}; do
+        config_file="${params.configurations_dir}/\$cfg/config.yaml"
+        gene_analysis=\$(grep '^gene_analysis:' "\$config_file" | awk '{print tolower(\$2)}')
+        variant_analysis=\$(grep '^variant_analysis:' "\$config_file" | awk '{print tolower(\$2)}')
+        disease_analysis=\$(grep '^disease_analysis:' "\$config_file" | awk '{print tolower(\$2)}')
         run_id=\$(echo \$cfg | tr '/' '_')
         results_dir="${params.results_dir}/\$cfg/${corpus_id}"
         phenopacket_dir="${params.corpora_dir}/${corpus_id}/phenopackets"

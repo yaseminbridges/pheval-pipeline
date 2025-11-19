@@ -23,6 +23,6 @@ process runGADORunner {
       -r gadophevalrunner \
       -t ${params.corpora_dir}/${corpus.corpora_id} \
       -o "\$outdir" \
-      -v ${cfg.gado_version}
+      -v ${cfg.version}
     """
 }

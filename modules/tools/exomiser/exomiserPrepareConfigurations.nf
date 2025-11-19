@@ -23,15 +23,15 @@ process prepareExomiserConfigurations {
         ln -s ${params.exomiser_data_dir}/${cfg.hg38_db}_hg38 ./
     fi
 
-    cp -r ${params.exomiser_distribution_dir}/exomiser-cli-${cfg.exomiser_version} ./
+    cp -r ${params.exomiser_distribution_dir}/exomiser-cli-${cfg.version} ./
 
-    cp ${baseDir}/presets/${cfg.preset} ./
+    cp ${baseDir}/modules/tools/exomiser/presets/${cfg.exomiser_analysis} ./
 
-    sed -e "s|{{EXOMISER_VERSION}}|${cfg.exomiser_version}|g" \
+    sed -e "s|{{EXOMISER_VERSION}}|${cfg.version}|g" \
         -e "s|{{HG19_VERSION}}|\"${cfg.hg19_db}\"|g" \
         -e "s|{{HG38_VERSION}}|\"${cfg.hg38_db}\"|g" \
         -e "s|{{PHENO_VERSION}}|\"${cfg.phenotype_db}\"|g" \
-        -e "s|{{PRESET}}|${cfg.preset}|g" \
-        ${params.exomiser_config_template} > config.yaml
+        -e "s|{{PRESET}}|${cfg.exomiser_analysis}|g" \
+        ${cfg.config_template} > config.yaml
     """
 }
