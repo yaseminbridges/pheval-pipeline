@@ -6,7 +6,7 @@ This repository provides a Nextflow pipeline for running and benchmarking the ph
 The workflow brings together all phases of a benchmarking run into one reproducible pipeline:
 * **Data preparation** - builds tool configuration directories and corpus structures (phenopackets + VCFs). 
 * **Runner** - runs tools across all defined configuration–corpus combinations.
-* e**Analysis** - runs the benchmark to generate performance plots, summary statistics, and evaluation metrics for all Exomiser runs.
+* **Analysis** - runs the benchmark to generate performance plots, summary statistics, and evaluation metrics for all Exomiser runs.
 
 This pipeline streamlines the entire process from raw inputs to fully benchmarked outputs — in a single command, providing a consistent and reproducible framework for large-scale evaluations.
 
