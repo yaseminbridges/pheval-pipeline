@@ -52,6 +52,6 @@ process prepareGADOConfigurations {
       -e "s|{{PREDICTION_INFO}}|\$prediction_info|g" \
       -e "s|{{GENE_LIST}}|\$genes_file|g" \
       -e "s|{{PREDICTION_MATRIX}}|\$prediction_matrix|g" \
-      ${params.gado_config_template} > config.yaml
+      ${cfg.config_template} > config.yaml
     """
 }
