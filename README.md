@@ -2,12 +2,11 @@
 
 This repository provides a Nextflow pipeline for running and benchmarking the phenotype-driven prioritisation tools within the [PhEval](https://github.com/monarch-initiative/pheval) evaluation framework.
 
-[Exomiser](https://github.com/exomiser/Exomiser)
 
 The workflow brings together all phases of a benchmarking run into one reproducible pipeline:
-	•	**Data preparation** - builds tool configuration directories and corpus structures (phenopackets + VCFs).
-	•	**Runner** - runs tools across all defined configuration–corpus combinations.
-	•	**Analysis** - runs the benchmark to generate performance plots, summary statistics, and evaluation metrics for all Exomiser runs.
+* **Data preparation** - builds tool configuration directories and corpus structures (phenopackets + VCFs). 
+* **Runner** - runs tools across all defined configuration–corpus combinations.
+* e**Analysis** - runs the benchmark to generate performance plots, summary statistics, and evaluation metrics for all Exomiser runs.
 
 This pipeline streamlines the entire process from raw inputs to fully benchmarked outputs — in a single command, providing a consistent and reproducible framework for large-scale evaluations.
 
@@ -57,15 +56,15 @@ tuple val(cfg), path('prepared_config_dir'), emit: cfg
 ```
 This process should:
 
-* Read cfg.config_template 
+* Read `cfg.config_template`
 * Substitute fields such as version, parameters etc. 
 * Write a fully-realised configuration file into `configurations/<config_id>/`
 * Prepare the necessary configurations for the tool
 
 This is the equivalent of:
 
-* prepareExomiserConfigurations 
-* prepareGADOConfigurations
+* `prepareExomiserConfigurations`
+* `prepareGADOConfigurations`
 
 #### toolRunner.nf (required)
 
@@ -84,14 +83,16 @@ This process must:
 * load the tool container or conda environment 
 * call pheval run with:
   * -i <prepared_config_dir>
-  * -r <runner>
-  * -t <corpus directory>
+  * -r <runner_name>
+  * -t <corpus_directory>
   * -o <results_dir>
   * -v <tool_version>
 
-tool_config_template.yml (required)
+#### tool_config_template.yml (required)
 
-A YAML template describing the tool’s configuration fields. Example minimal structure:
+A YAML template describing the tool’s configuration fields. 
+
+Example minimal structure:
 
 ```yaml
 tool: TOOLNAME
@@ -138,18 +139,18 @@ params.tools = [
 Required fields:
 
 
-`config_id` --> Output directory name and configuration label
-`tool` --> Name used to filter configs in main.nf
-`runner` --> The runner name passed to -r in the pheval run command
-`version` --> Tool version passed for the configuration
-`config_template` --> Path to the template YAML
+- `config_id` --> Output directory name and configuration label
+- `tool` --> Name used to filter configs in main.nf
+- `runner` --> The runner name passed to -r in the pheval run command
+- `version` --> Tool version passed for the configuration
+- `config_template` --> Path to the template YAML
 
 Optional fields:
 
 Any custom fields required by your tool go here. They will be available inside both:
 
-* toolPrepareConfigurations.nf 
-* toolRunner.nf
+* `toolPrepareConfigurations.nf`
+* `toolRunner.nf`
 
 ### 3. Updating the HPC / Local Configs (required)
 
