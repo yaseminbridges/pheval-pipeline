@@ -45,48 +45,113 @@ Below is what each file must contain and how it plugs into the pipeline.
 
 #### toolPrepareConfigurations.nf (required)
 
-A process producing prepared configuration files for the tool.
+Every tool must implement its own toolPrepareConfigurations.nf using the same input/output interface, so that the main workflow can automatically integrate it.
+
+##### Required Inputs & Outputs
+
+Input:
 
 ```
-Input:
-tuple val(cfg) (the config dictionary from params.tools)
+tuple val(cfg)
+```
+
+Where cfg is one entry from `params.tools` in the `nextflow.config`.
+
+It contains fields such as:
+- `config_id`
+- `tool`
+- `version`
+- tool specific paths / parameters needed for configuration
+- `config_template` (path to the tool’s template YAML)
 
 Output:
-tuple val(cfg), path('prepared_config_dir'), emit: cfg
+
 ```
-This process should:
+tuple val(cfg), path('<config_id>'), emit: cfg
+```
 
-* Read `cfg.config_template`
-* Substitute fields such as version, parameters etc. 
-* Write a fully-realised configuration file into `configurations/<config_id>/`
-* Prepare the necessary configurations for the tool
+This exact output structure is required so the rest of the workflow can combine configurations with corpora and pass the results to the tool runner.
 
-This is the equivalent of:
+##### What `toolPrepareConfigurations.nf` must do
 
-* `prepareExomiserConfigurations`
-* `prepareGADOConfigurations`
+Each tool’s preparation script must:
+
+1. Create a directory named exactly: `<configurations_dir>/<config_id>/`
+2. Load the tool’s YAML template, defined in: `cfg.config_template`
+3. Substitute template fields using values in cfg
+4. Write the final config.yaml to `<configurations_dir>/<config_id>/`
+5. Prepare the full tool-specific input directory. 
+6. Ensure all required assets live inside `<config_id>/`, for example:
+   * config.yaml 
+   * databases 
+   * JAR files 
+   * ontology files 
+   * reference matrices 
+   * analysis configuration files
+
+(whatever is required for your tool’s PhEval runner to execute)
+
 
 #### toolRunner.nf (required)
 
-Runs the tool using pheval run.
+Each tool must provide a `toolRunner.nf` that defines how the tool is executed via pheval run.
+
+This process is responsible for running the tool on each corpus.
+
+##### Required Inputs & Outputs
+
+Input:
 
 ```
-Input:
 tuple val(cfg), val(corpus)
+```
+
+This tuple is created in the main workflow using:
+
+```
+runTOOLRunner(prepared_configs.cfg.combine(corpora_ch.corpus))
+```
+
+Meaning:
+* cfg → one prepared configuration for the tool 
+* corpus → one corpus produced by prepareCorpora 
+* .combine() pairs every configuration with every corpus, so the runner must accept both values.
 
 Output:
-tuple val(corpus_id), val(config_id), emit: run
+
+```
+tuple val(cfg), path('<config_id>'), emit: cfg
 ```
 
-This process must:
+This structure is required so the benchmark stage can identify all run results per corpus/tool.
 
-* load the tool container or conda environment 
-* call pheval run with:
-  * -i <prepared_config_dir>
-  * -r <runner_name>
-  * -t <corpus_directory>
-  * -o <results_dir>
-  * -v <tool_version>
+##### What `toolRunner.nf` Must Do
+
+Each tool’s runner must:
+1. Load the correct execution environment (Singularity container or conda env declared in hpc.config)
+2. Create the output directory: `<results_dir>/<config_id>/<corpus_id>/`
+3. Call `pheval run` exactly like:
+```bash
+pheval run \
+  -i <prepared_config_dir> \
+  -r <runner_name> \
+  -t <corpus_directory> \
+  -o <results_output_dir> \
+  -v <tool_version>
+```
+##### Important: Do not modify the calling structure in `main.nf`
+
+All tools must be compatible with being called as:
+```
+runToolRunner(prepared_configs.cfg.combine(corpora_ch.corpus))
+```
+
+Therefore:
+* `toolPrepareConfigurations.nf` must emit tuple val(cfg), path(...)
+* `toolRunner.nf` must accept tuple val(cfg), val(corpus)
+* Output must follow the required format so the workflow can concatenate results and benchmark.
+
+This guarantees new tools behave identically to Exomiser and GADO without requiring changes to core workflow logic.
 
 #### tool_config_template.yml (required)
 
@@ -105,7 +170,7 @@ tool_specific_configuration_options:
   param_b: {{PARAM_B}}
 ```
 
-Anything inside {{ … }} will be substituted using values from params.tools.
+Anything inside {{ … }} will be substituted using values from `params.tools` section in the `nextflow.config`.
 
 #### containers/pheval-TOOL.def (optional)
 
@@ -118,8 +183,7 @@ Conda environment file for users who aren’t using Singularity.
 
 ### 2. Updating nextflow.config (required)
 
-Add a new tool entry inside:
-
+Every new tool must add an entry to the `params.tools` list in the `nextflow.config`:
 ```
 params.tools = [
     [
@@ -138,12 +202,12 @@ params.tools = [
 
 Required fields:
 
-
-- `config_id` --> Output directory name and configuration label
-- `tool` --> Name used to filter configs in main.nf
-- `runner` --> The runner name passed to -r in the pheval run command
-- `version` --> Tool version passed for the configuration
-- `config_template` --> Path to the template YAML
+| Field            | Description                                           |
+|------------------|-------------------------------------------------------|
+| `config_id`      | Output directory name and configuration label         |
+| `tool`           | Name used to filter tool configs in `main.nf`         |
+| `version`        | Tool version passed into the configuration and runner |
+| `config_template`| Path to the tool’s YAML configuration template        |
 
 Optional fields:
 
@@ -174,7 +238,7 @@ This ensures the tool uses the correct runtime environment.
 
 ### 4. Updating main.nf (required)
 
-Every new tool must be explicitly included:
+Every new tool must be explicitly included at the top of `main.nf`:
 
 ```
 include { prepareTOOLNAMEConfigurations } from './modules/tools/toolname/toolPrepareConfigurations.nf'
@@ -225,10 +289,10 @@ nextflow run main.nf -profile local
 Outputs
 
 The pipeline automatically organises outputs into the following directories:
-	•	configurations/ – Prepared tool configuration directories
-	•	corpora/ – Staging area for phenopackets and VCFs
-	•	results/ – Results of all runs (raw and PhEval-standardised)
-	•	benchmark/ – Benchmark results, including plots, summary statistics, and evaluation metrics
+* configurations/ – Prepared tool configuration directories 
+* corpora/ – Staging area for phenopackets and VCFs 
+* results/ – Results of all runs (raw and PhEval-standardised)
+* benchmark/ – Benchmark results, including plots, summary statistics, and evaluation metrics
 
 Benchmarks are corpus-specific: for each corpus, a YAML configuration file and corresponding plots/statistics are created.
 
